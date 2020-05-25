@@ -7,13 +7,14 @@ import { Subject } from 'rxjs';
 })
 export class CartService {
 
-
-  constructor() { }
-  cartItems:CartItem[]= [];
+  cartItems: CartItem[];
   totalPrice:Subject<number>= new Subject<number>();
   totalQuantity:Subject<number>= new Subject<number>();
-
-  addToCart(cartItem:CartItem){
+  constructor()
+  {
+    this.cartItems = JSON.parse(sessionStorage.getItem('cartItems')) != null ? JSON.parse(sessionStorage.getItem('cartItems')):[];
+   }
+addToCart(cartItem:CartItem){
 console.log(cartItem.id);
 
   let alreadyCartItem:boolean=false;
@@ -30,6 +31,7 @@ else{
  }
 this.computeCartTotal();
 
+
 }
   computeCartTotal() {
     let  totalPrice:number= 0;
@@ -45,7 +47,7 @@ this.computeCartTotal();
     this.totalPrice.next(totalPrice);
     this.totalQuantity.next(totalQuantity);
     this.logCartItemData(totalPrice,totalQuantity);
-
+    this.persistCartItems();
   }
 
 
@@ -81,6 +83,10 @@ this.computeCartTotal();
     this.computeCartTotal();
   }
 
+  persistCartItems(){
+    console.log('the carts items here' +JSON.stringify(this.cartItems));
+    sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+  }
 
 
 
