@@ -15,7 +15,7 @@ export class ProductService {
     return this.categoryName;
   }
   private categoryName:string;
-  private baseUrl='http://localhost:8080/api/products';
+  private baseUrl='http://192.168.99.100:8080/api/products';
   constructor(private httpClient:HttpClient) {}
 
   setCategoryName(categoryName:string){
@@ -40,7 +40,7 @@ export class ProductService {
 
 
   getProductCategories():Observable<ProductCategory[]> {
-    const categoryUrl='http://localhost:8080/api/product-category';
+    const categoryUrl='http://192.168.99.100:8080/api/product-category';
     return this.httpClient.get<GetResponseProductCategory>(categoryUrl).pipe(
       map(response=>response._embedded.productCategory)
     );
