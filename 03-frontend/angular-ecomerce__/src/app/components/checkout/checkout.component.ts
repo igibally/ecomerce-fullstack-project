@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder,FormControl} from '@angular/forms';
 import { CartService } from 'src/app/services/cart.service';
+import{Luv2ShopFormService} from 'src/app/services/luv2-shop-form.service';
 
 @Component({
   selector: 'app-checkout',
@@ -12,7 +13,12 @@ export class CheckoutComponent implements OnInit {
   checkoutFormGroup:FormGroup ;
   totalPrice:number=0;
   totalQuantity:number=0;
-  constructor(private formBuilder:FormBuilder,private cartService:CartService) { }
+  creditCardYears:number[]=[];
+  creditCardMonths: number[]=[];
+  startMonth:number
+
+
+  constructor(private formBuilder:FormBuilder,private cartService:CartService,private checkOutService:Luv2ShopFormService) { }
 
   ngOnInit(): void {
 
@@ -48,6 +54,24 @@ export class CheckoutComponent implements OnInit {
 
     this.getOrderDetailsStatus();
     this.cartService.computeCartTotal();
+    // get credit card months
+
+    this.startMonth = new Date().getMonth()+1;
+    
+    this.checkOutService.getCreditCardMonths(this.startMonth).subscribe(
+
+      data=>{
+        console.log("this is the monthes"+JSON.stringify(data));
+        this.creditCardMonths=data;
+      }
+    );
+    // get credit card years
+    this.checkOutService.getCreditCardYears().subscribe(
+      data=>{
+      console.log("this is the years"+JSON.stringify(data));
+      this.creditCardYears=data;
+    }
+    );
   }
   getOrderDetailsStatus() {
     this.cartService.totalPrice.subscribe(data=> this.totalPrice=data);
@@ -72,4 +96,24 @@ export class CheckoutComponent implements OnInit {
     }
 
   }
+
+  handleMonthsAndYears(){
+      const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
+      const currentYear:number= new Date().getFullYear();
+      const selectedYear:number= Number(creditCardFormGroup.value.expirationYear);
+      if(selectedYear === currentYear)
+        {
+          this.startMonth=new Date().getMonth() + 1;
+        }
+        else{
+          this.startMonth=1;
+        }
+        console.log("start month"+this.startMonth);
+        this.checkOutService.getCreditCardMonths(this.startMonth).subscribe(
+          data=>{
+            this.creditCardMonths=data;
+          }
+        );
+  }
+   
 }

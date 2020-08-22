@@ -191,18 +191,22 @@
       <div class="col-md-3"><label>Expiration Month:</label></div>
       <div class="col-md-9">
         <div class="input-space">
-          <select formControlName="expirationMonth">
-            <option>ToDo</option>
+          <select formControlName="expirationMonth" [(ngModel)]="startMonth">
+            <option *ngFor="let month of creditCardMonths" [ngValue]="month">
+              {{month}}
+            </option>
           </select>
         </div>
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-3"><label>Expriration Year :</label></div>
       <div class="col-md-9">
         <div class="input-space">
-          <select formControlName="expirationYear" >
+          <select formControlName="expirationYear"   (change)="handleMonthsAndYears()" >
+            <option *ngFor="let year of creditCardYears">
+                {{year}}
+            </option>
           </select>
         </div>
       </div>
